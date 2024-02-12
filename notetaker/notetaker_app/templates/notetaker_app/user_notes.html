@@ -1,0 +1,103 @@
+{% extends 'notetaker_app/base.html' %}
+{% block content %}
+<style>
+    .notes-container {
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .notes-container h1 {
+        color: #333;
+        font-weight: 300;
+    }
+
+    .notes-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .notes-list li {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .note-meta {
+        font-size: 0.9em;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .note-text {
+        margin-bottom: 10px;
+    }
+
+    .action-links a {
+        text-decoration: none;
+        color: #007bff;
+        margin-right: 10px;
+    }
+
+    .action-links a:hover {
+        text-decoration: underline;
+    }
+
+    .note-create-link {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 15px;
+        background-color: #666;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .note-create-link:hover {
+        background-color: #333;
+    }
+
+    .logout-button {
+        display: inline-block;
+        padding: 10px 15px;
+        background-color: #666;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .logout-button:hover {
+        background-color: #333;
+    }
+</style>
+
+<div class="notes-container">
+    <!-- Inside your user account page template -->
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="logout-button">Logout</button>
+    </form>
+    <h1>{{ user.username }}'s Notes</h1>
+    {% if notes %}
+        <ul class="notes-list">
+            {% for note in notes %}
+                <li>
+                    <p class="note-meta">{{ note.created_at }}</p>
+                    <p class="note-theme">{{ note.theme }}</p>
+                    <p class="note-text">{{ note.text }}</p>
+                    <div class="action-links">
+                        <a href="{% url 'note_edit' note.id %}">Edit</a>
+                        <a href="{% url 'note_delete' note.id %}">Delete</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You don't have any notes yet. Let's create one!</p>
+    {% endif %}
+    <a href="{% url 'note_create' %}" class="note-create-link">Create a New Note</a>
+</div>
+{% endblock %}
